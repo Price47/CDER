@@ -50,6 +50,7 @@ class D12(Die):
 class D20(Die):
     __name__ = "[ D20 ]"
     die_max: int = 20
+    critical_roll: bool = False
 
     @property
     def critical(self) -> Optional[str]:
@@ -59,6 +60,13 @@ class D20(Die):
             return "Critical Success"
 
         return None
+
+    def roll(self):
+        _roll = super().roll()
+        if _roll == 20:
+            self.critical_roll = True
+
+        return _roll
 
     def __str__(self):
         _str = f"{self.__name__}: {self.last_role if self.last_role else 'unrolled'}"
