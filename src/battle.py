@@ -2,7 +2,7 @@ from typing import Dict
 
 from pydantic import BaseModel
 
-from src.character import Character
+from src.character.character import Character
 
 
 class Battle(BaseModel):

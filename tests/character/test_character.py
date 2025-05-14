@@ -1,14 +1,13 @@
-from unittest.mock import patch
-from src.character import Character
+from src.character.character import Character
 
 default_json = {
-    "health": 30,
+    "hp": 30,
     "config": {
         "ac": 18,
         "hit_modifier": 2,
         "morale": 1,
         "behavior": {
-            "target_priority": "strongest",
+            "target_priority": "most_healthy",
         }
     }
 }
@@ -17,7 +16,7 @@ def test_from_json_method():
     c = Character.from_json(default_json)
 
     assert c.ac == 18
-    assert c.target_priority == "strongest"
+    assert c.target_priority == "most_healthy"
 
 def test_hit_misses(mocker):
     mocker.patch("src.roll.dice.randint", side_effect=[10])

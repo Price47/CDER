@@ -8,7 +8,7 @@ from src.roll.dice_pool import HitRoll, DamageRoll
 
 class BehaviorConfig(BaseModel):
     target_priority: Optional[
-        Union[Literal["strongest", "weakest", "most_healthy", "least_healthy"]]
+        Union[Literal["most_healthy", "least_healthy"]]
     ] = "most_healthy"
 
 
@@ -20,7 +20,7 @@ class CharacterConfig(BaseModel):
 
 
 class Character(BaseModel):
-    health: int
+    hp: int
     config: CharacterConfig
 
     # ========= properties ========= #
@@ -58,7 +58,7 @@ class Character(BaseModel):
     @classmethod
     def from_json(cls, json):
         return cls(
-            health=json["health"],
+            hp=json["hp"],
             config=CharacterConfig(
                 **json["config"]
             ),

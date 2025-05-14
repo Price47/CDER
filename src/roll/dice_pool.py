@@ -3,6 +3,9 @@ from src.roll.dice import Die, D20
 
 
 class RollXDX(BaseModel):
+    """
+    Roll XDX dice (2d4, 4d10, etc)
+    """
     x: int = 1
     dx: type[Die] = None
 
@@ -14,12 +17,17 @@ class RollXDX(BaseModel):
         return sum([d.roll() for d in self.dice_pool])
 
 
-class RollXDXPlusModifier(RollXDX):
+class RollXDXPlusModifierMixin(BaseModel):
+    """
+    Model mixin adding a modifier
+    """
     modifier: int = 0
 
 
-class HitRoll(RollXDXPlusModifier):
-    dx: type[Die] = D20
+class CriticalRoll(RollXDX):
+    """
+    Model for any roll that allows for critical success or failure
+    """
     critical_success: bool = False
     critical_failure: bool = False
 
@@ -30,7 +38,11 @@ class HitRoll(RollXDXPlusModifier):
         return _roll + self.modifier
 
 
-class DamageRoll(RollXDXPlusModifier):
+class HitRoll(CriticalRoll, RollXDXPlusModifierMixin):
+    dx: type[Die] = D20
+
+
+class DamageRoll(RollXDX, RollXDXPlusModifierMixin):
     def roll(self, **kwargs) -> int:
         if kwargs.get("critical"):
             # double rolled damage die
