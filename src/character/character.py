@@ -1,9 +1,46 @@
+from functools import cached_property
 from typing import Literal, Union, Optional
 
 from pydantic import BaseModel
 
 from src.roll.dice import D10
 from src.roll.dice_pool import HitRoll, DamageRoll
+
+class CharacterStats(BaseModel):
+    strength: int
+    dexterity: int
+    constitution: int
+    intelligence: int
+    charisma: int
+    wisdom: int
+
+    @staticmethod
+    def _modifier(v: int) -> int:
+        return (v - 10) // 2
+
+    @property
+    def str_modifier(self) -> int:
+        return self._modifier(self.strength)
+
+    @property
+    def dex_modifier(self):
+        return self._modifier(self.dexterity)
+
+    @property
+    def con_modifier(self) -> int:
+        return self._modifier(self.constitution)
+
+    @property
+    def int_modifier(self) -> int:
+        return self._modifier(self.intelligence)
+
+    @property
+    def wis_modifier(self) -> int:
+        return self._modifier(self.wisdom)
+
+    @property
+    def cha_modifier(self) -> int:
+        return self._modifier(self.charisma)
 
 
 class BehaviorConfig(BaseModel):
@@ -17,6 +54,7 @@ class CharacterConfig(BaseModel):
     hit_modifier: int
     morale: int
     behavior: BehaviorConfig
+    stats: Optional[CharacterStats] = None
 
 
 class Character(BaseModel):
@@ -26,6 +64,14 @@ class Character(BaseModel):
     # ========= properties ========= #
     # nested and derived properties  #
     # ============================== #
+    @property
+    def behavior(self) -> BehaviorConfig:
+        return self.config.behavior
+
+    @property
+    def stats(self) -> CharacterStats:
+        return self.config.stats
+
     @property
     def ac(self):
         return self.config.ac
@@ -38,8 +84,14 @@ class Character(BaseModel):
     def target_priority(self):
         return self.config.behavior.target_priority
 
+    @cached_property
+    def initiative(self):
+        return
 
-    def hit(self, target_ac: int) -> int:
+    # ========= Character Interactions ========= #
+    # Character actions towards other characters #
+    # ========================================== #
+    def hit(self, target_character: "Character") -> int:
         hit = HitRoll(modifier=self.hit_modifier)
         hit_roll = hit.roll()
 
@@ -47,8 +99,10 @@ class Character(BaseModel):
         if hit.critical_failure:
             return 0
 
-        if hit_roll > target_ac:
-            return DamageRoll(dx=D10).roll(critical=hit.critical_success)
+        if hit_roll > target_character.ac:
+            damage =  DamageRoll(dx=D10).roll(critical=hit.critical_success)
+            target_character.hp -= damage
+            return damage
 
         return 0
 

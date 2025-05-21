@@ -10,3 +10,7 @@ class Battle(BaseModel):
     Describe and configure a large scale battle
     """
     belligerents: Dict[Character] = {"NPC": [], "Players": []}
+
+
+
+

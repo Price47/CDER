@@ -1,27 +1,39 @@
+from typing import Any
+
 from pydantic import BaseModel
 from src.roll.dice import Die, D20
 
 
-class RollXDX(BaseModel):
+class RollDX(BaseModel):
+    dx: type[Die] = None
+    die: Die = None
+    modifier: int = 0
+
+    def model_post_init(self, context: Any):
+        self.die = self.dx()
+
+    def roll(self, **kwargs):
+        return self.die.roll() + self.modifier
+
+
+class RollXDX(RollDX):
     """
     Roll XDX dice (2d4, 4d10, etc)
     """
     x: int = 1
-    dx: type[Die] = None
+    dice_pool: list[Die] = []
 
-    @property
-    def dice_pool(self):
-        return [self.dx()] * self.x
+    def generate_pool(self):
+        self.dice_pool = [self.dx()] * self.x
+
+    def model_post_init(self, context: Any):
+        self.generate_pool()
+
+    def increase_pool(self, x):
+        self.dice_pool.extend([self.dx()] * x)
 
     def roll(self, **kwargs):
         return sum([d.roll() for d in self.dice_pool])
-
-
-class RollXDXPlusModifierMixin(BaseModel):
-    """
-    Model mixin adding a modifier
-    """
-    modifier: int = 0
 
 
 class CriticalRoll(RollXDX):
@@ -38,14 +50,15 @@ class CriticalRoll(RollXDX):
         return _roll + self.modifier
 
 
-class HitRoll(CriticalRoll, RollXDXPlusModifierMixin):
+class HitRoll(CriticalRoll):
     dx: type[Die] = D20
 
 
-class DamageRoll(RollXDX, RollXDXPlusModifierMixin):
+class DamageRoll(RollXDX):
     def roll(self, **kwargs) -> int:
         if kwargs.get("critical"):
-            # double rolled damage die
+            # double rolled damage die, and regenerate dice pool
             self.x = self.x * 2
+            self.generate_pool()
 
-        return super().roll()
+        return super().roll() + self.modifier

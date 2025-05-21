@@ -13,7 +13,7 @@ class CharacterHeapConfig(BaseModel):
 
 class CharacterHeap:
     """
-    Min heap priority queue implementation that for characters, using one of
+    Min heap priority queue implementation for characters, using one of
     its attributes like AC or HP
     """
     def __init__(self, initial_characters: List[Character] = None, *, config: CharacterHeapConfig = None):
