@@ -8,14 +8,10 @@ setuptools.setup(
     name="battle-simulator",
     version="0.0.1",
     author="Richard Stoeffel",
-    author_email='richard@fake.com',
+    author_email="richard@fake.com",
     description="My short description",
     extras_require={
-        "test": [
-            "pytest",
-            "pytest-cov",
-            "pytest-clarity",
-            'mock;python_version<"3.3"']
+        "test": ["pytest", "pytest-cov", "pytest-clarity", 'mock;python_version<"3.3"']
     },
     long_description=long_description,
     long_description_content_type="text/markdown",

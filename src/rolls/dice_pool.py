@@ -1,7 +1,7 @@
 from typing import Any
 
 from pydantic import BaseModel
-from src.roll.dice import Die, D20
+from src.rolls.dice import Die, D20
 
 
 class RollDX(BaseModel):
@@ -9,7 +9,7 @@ class RollDX(BaseModel):
     die: Die = None
     modifier: int = 0
 
-    def model_post_init(self, context: Any):
+    def model_post_init(self, _context: Any):
         self.die = self.dx()
 
     def roll(self, **kwargs):
@@ -20,6 +20,7 @@ class RollXDX(RollDX):
     """
     Roll XDX dice (2d4, 4d10, etc)
     """
+
     x: int = 1
     dice_pool: list[Die] = []
 
@@ -38,8 +39,9 @@ class RollXDX(RollDX):
 
 class CriticalRoll(RollXDX):
     """
-    Model for any roll that allows for critical success or failure
+    Model for any rolls that allows for critical success or failure
     """
+
     critical_success: bool = False
     critical_failure: bool = False
 

@@ -19,7 +19,8 @@ class Die(BaseModel):
         return _roll
 
     def __str__(self):
-        return f"{self.__name__}: {self.last_role if self.last_role else 'unrolled'}"
+        # clean str rep, either [D10] or D[10]: 6 for a rolled die
+        return f"{f'{self.__name__}: {self.last_role}' if self.last_role else self.__name__}"
 
 
 class D4(Die):

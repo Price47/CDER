@@ -3,8 +3,9 @@ from typing import Literal, Union, Optional
 
 from pydantic import BaseModel
 
-from src.roll.dice import D10
-from src.roll.dice_pool import HitRoll, DamageRoll
+from src.rolls.dice import D10
+from src.rolls.dice_pool import HitRoll, DamageRoll
+
 
 class CharacterStats(BaseModel):
     strength: int
@@ -44,9 +45,9 @@ class CharacterStats(BaseModel):
 
 
 class BehaviorConfig(BaseModel):
-    target_priority: Optional[
-        Union[Literal["most_healthy", "least_healthy"]]
-    ] = "most_healthy"
+    target_priority: Optional[Union[Literal["most_healthy", "least_healthy"]]] = (
+        "most_healthy"
+    )
 
 
 class CharacterConfig(BaseModel):
@@ -100,21 +101,18 @@ class Character(BaseModel):
             return 0
 
         if hit_roll > target_character.ac:
-            damage =  DamageRoll(dx=D10).roll(critical=hit.critical_success)
+            damage = DamageRoll(dx=D10).roll(critical=hit.critical_success)
             target_character.hp -= damage
             return damage
 
         return 0
 
     # ========= class methods ========= #
-    # generate character classes        #
+    # generate characters classes        #
     # ================================= #
     @classmethod
     def from_json(cls, json):
         return cls(
             hp=json["hp"],
-            config=CharacterConfig(
-                **json["config"]
-            ),
+            config=CharacterConfig(**json["config"]),
         )
-

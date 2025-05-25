@@ -1,5 +1,6 @@
-from src.character.character import Character
-from tests.character.utils import _character_json
+from src.characters.character import Character
+from tests.characters.utils import _character_json
+
 
 # Hit #
 def test_from_json_method():

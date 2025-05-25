@@ -1,7 +1,7 @@
 from typing import List
 
-from src.character.character import Character
-from src.character.data_structs.character_min_heap import CharacterHeap
+from src.characters.character import Character
+from src.characters.data_structs.character_min_heap import CharacterHeap
 
 default_config = {
     "ac": 18,
@@ -9,25 +9,18 @@ default_config = {
     "morale": 1,
     "behavior": {
         "target_priority": "most_healthy",
-    }
+    },
 }
 
+
 def _characters() -> (List[Character], Character):
-    min_char = Character(**{
-        "hp": 1,
-        "config": default_config
-    })
+    min_char = Character(**{"hp": 1, "config": default_config})
     return [
-        Character(**{
-        "hp": 30,
-        "config": default_config
-    }), Character(**{
-        "hp": 10,
-        "config": default_config
-    }), Character(**{
-        "hp": 35,
-        "config": default_config
-    }), min_char], min_char
+        Character(**{"hp": 30, "config": default_config}),
+        Character(**{"hp": 10, "config": default_config}),
+        Character(**{"hp": 35, "config": default_config}),
+        min_char,
+    ], min_char
 
 
 def test_character_min_heap():
@@ -54,7 +47,7 @@ def test_min_heapify():
     chars, min_char = _characters()
     c_heap = CharacterHeap(chars)
 
-    # Last character in the list should be smallest (top of queue)
+    # Last characters in the list should be smallest (top of queue)
     assert c_heap._heap[0] == min_char
 
 
@@ -67,4 +60,3 @@ def test_pop():
     assert c_heap.pop() == min_char
     assert c_heap._heap[0] == second_lowest_char
     assert c_heap.pop() == second_lowest_char
-

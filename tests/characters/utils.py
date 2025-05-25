@@ -15,6 +15,6 @@ def _character_json(**kwargs):
                 "intelligence": kwargs.get("intelligence", 0),
                 "wisdom": kwargs.get("wisdom", 0),
                 "charisma": kwargs.get("charisma", 0),
-            }
-        }
+            },
+        },
     }
