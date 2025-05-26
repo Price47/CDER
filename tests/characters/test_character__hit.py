@@ -8,7 +8,7 @@ def test_hit_misses(mocker):
     # target characters
     tc = Character.from_json(_character_json(ac=12))
 
-    hit_damage = c.hit(tc)
+    hit_damage = c.roll_hit(tc)
     assert hit_damage == 0
     assert tc.hp == 30
 
@@ -18,7 +18,7 @@ def test_hit(mocker):
     c = Character.from_json(_character_json())
     # target characters
     tc = Character.from_json(_character_json(ac=12))
-    hit_damage = c.hit(tc)
+    hit_damage = c.roll_hit(tc)
     assert hit_damage == 6
     assert tc.hp == 30 - hit_damage
 
@@ -29,7 +29,7 @@ def test_critical_hit(mocker):
     # target characters
     tc = Character.from_json(_character_json(ac=12))
 
-    hit_damage = c.hit(tc)
+    hit_damage = c.roll_hit(tc)
     assert hit_damage == 14
     assert tc.hp == 30 - hit_damage
 
@@ -40,6 +40,6 @@ def test_critical_miss(mocker):
     # target characters
     tc = Character.from_json(_character_json(ac=12))
 
-    hit_damage = c.hit(tc)
+    hit_damage = c.roll_hit(tc)
     assert hit_damage == 0
     assert tc.hp == 30

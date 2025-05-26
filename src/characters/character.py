@@ -1,47 +1,13 @@
+import math
 from functools import cached_property
-from typing import Literal, Union, Optional
+from typing import Literal, Union, Optional, Any
 
 from pydantic import BaseModel
 
+from src.rolls.attribute_rolls import DexRoll
 from src.rolls.dice import D10
 from src.rolls.dice_pool import HitRoll, DamageRoll
-
-
-class CharacterStats(BaseModel):
-    strength: int
-    dexterity: int
-    constitution: int
-    intelligence: int
-    charisma: int
-    wisdom: int
-
-    @staticmethod
-    def _modifier(v: int) -> int:
-        return (v - 10) // 2
-
-    @property
-    def str_modifier(self) -> int:
-        return self._modifier(self.strength)
-
-    @property
-    def dex_modifier(self):
-        return self._modifier(self.dexterity)
-
-    @property
-    def con_modifier(self) -> int:
-        return self._modifier(self.constitution)
-
-    @property
-    def int_modifier(self) -> int:
-        return self._modifier(self.intelligence)
-
-    @property
-    def wis_modifier(self) -> int:
-        return self._modifier(self.wisdom)
-
-    @property
-    def cha_modifier(self) -> int:
-        return self._modifier(self.charisma)
+from src.shared_models.character_stats import CharacterStats
 
 
 class BehaviorConfig(BaseModel):
@@ -51,7 +17,6 @@ class BehaviorConfig(BaseModel):
 
 
 class CharacterConfig(BaseModel):
-    ac: int
     hit_modifier: int
     morale: int
     behavior: BehaviorConfig
@@ -59,8 +24,13 @@ class CharacterConfig(BaseModel):
 
 
 class Character(BaseModel):
+    ac: int
     hp: int
+    max_hp: int = None
     config: CharacterConfig
+
+    def model_post_init(self, context: Any):
+        self.max_hp = self.hp
 
     # ========= properties ========= #
     # nested and derived properties  #
@@ -74,10 +44,6 @@ class Character(BaseModel):
         return self.config.stats
 
     @property
-    def ac(self):
-        return self.config.ac
-
-    @property
     def hit_modifier(self):
         return self.config.hit_modifier
 
@@ -87,12 +53,12 @@ class Character(BaseModel):
 
     @cached_property
     def initiative(self):
-        return
+        return DexRoll(stats=self.stats).roll()
 
     # ========= Character Interactions ========= #
     # Character actions towards other characters #
     # ========================================== #
-    def hit(self, target_character: "Character") -> int:
+    def roll_hit(self, target_character: "Character") -> int:
         hit = HitRoll(modifier=self.hit_modifier)
         hit_roll = hit.roll()
 
@@ -101,11 +67,24 @@ class Character(BaseModel):
             return 0
 
         if hit_roll > target_character.ac:
-            damage = DamageRoll(dx=D10).roll(critical=hit.critical_success)
-            target_character.hp -= damage
-            return damage
+            dmg = DamageRoll(dx=D10).roll(critical=hit.critical_success)
+            target_character.take_damage(dmg)
+            return dmg
 
         return 0
+
+    def take_damage(self, dmg: int):
+        self.hp -= dmg
+
+    def heal(self, healing: int):
+        health = self.hp + healing
+        self.hp = min(health, self.max_hp)
+
+    def act(self, target_character: "Character"):
+        """
+        Character action
+        """
+        self.roll_hit(target_character)
 
     # ========= class methods ========= #
     # generate characters classes        #
@@ -114,5 +93,6 @@ class Character(BaseModel):
     def from_json(cls, json):
         return cls(
             hp=json["hp"],
+            ac=json["ac"],
             config=CharacterConfig(**json["config"]),
         )

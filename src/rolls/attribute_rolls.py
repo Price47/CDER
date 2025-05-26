@@ -1,6 +1,6 @@
-from src.characters.character import CharacterStats
 from src.rolls.dice import D20, Die
 from src.rolls.dice_pool import RollDX
+from src.shared_models.character_stats import CharacterStats
 
 
 class AttributeRoll(RollDX):

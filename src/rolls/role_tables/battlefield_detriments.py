@@ -20,5 +20,7 @@ entries = [
 
 
 class BattleFieldDetriments(RollTable):
+    # Stolen from cottage of everything, with some additions
+    # https://www.cottageofeverything.com/blog/world-weavers-guide-to-combat-large-scale-battles-in-5th-edition
     def __init__(self):
         super().__init__(dx=D6, table_entries=entries, model=RollModel.STANDARD)

@@ -4,7 +4,6 @@ from src.characters.character import Character
 from src.characters.data_structs.character_min_heap import CharacterHeap
 
 default_config = {
-    "ac": 18,
     "hit_modifier": 2,
     "morale": 1,
     "behavior": {
@@ -14,11 +13,11 @@ default_config = {
 
 
 def _characters() -> (List[Character], Character):
-    min_char = Character(**{"hp": 1, "config": default_config})
+    min_char = Character(**{"hp": 1, "ac": 18, "config": default_config})
     return [
-        Character(**{"hp": 30, "config": default_config}),
-        Character(**{"hp": 10, "config": default_config}),
-        Character(**{"hp": 35, "config": default_config}),
+        Character(**{"hp": 30, "ac": 18, "config": default_config}),
+        Character(**{"hp": 10, "ac": 18, "config": default_config}),
+        Character(**{"hp": 35, "ac": 18, "config": default_config}),
         min_char,
     ], min_char
 

@@ -1,8 +1,8 @@
 def _character_json(**kwargs):
     return {
         "hp": kwargs.get("hp", 30),
+        "ac": kwargs.get("ac", 18),
         "config": {
-            "ac": kwargs.get("ac", 18),
             "hit_modifier": kwargs.get("hit_modifier", 2),
             "morale": kwargs.get("morale", 1),
             "behavior": {
