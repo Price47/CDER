@@ -1,4 +1,4 @@
-def _character_json(**kwargs):
+def character_json(**kwargs):
     return {
         "hp": kwargs.get("hp", 30),
         "ac": kwargs.get("ac", 18),

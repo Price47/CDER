@@ -1,15 +1,24 @@
 from typing import List
 
+from pydantic import BaseModel
+
 from src.characters import Character
 
 
-class TurnQueueEntry:
+class TurnQueueEntry(BaseModel):
     # manually handle turn
-    manual: bool = False
+    handle_turn_manually: bool = False
     character: Character
 
+    @classmethod
+    def from_character(cls, character: Character) -> "TurnQueueEntry":
+        return cls(
+            character=character,
+            handle_turn_manually=character.handle_turn_manually,
+        )
 
-class TurnQueue:
+
+class TurnQueue(BaseModel):
     """
     Simple queue implementation for turns, but with the standard functions from the all python
     builtin queues https://docs.python.org/3/library/queue.html#queue.Queue. FIFO by nature
@@ -17,7 +26,7 @@ class TurnQueue:
     they'll pop out
     """
 
-    queue: List[TurnQueueEntry]
+    queue: List[TurnQueueEntry] = []
 
     def qsize(self) -> int:
         return len(self.queue)

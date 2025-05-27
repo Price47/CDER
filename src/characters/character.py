@@ -1,8 +1,10 @@
-import math
+from dataclasses import field
+from uuid import uuid4, UUID
 from functools import cached_property
 from typing import Literal, Union, Optional, Any
 
 from pydantic import BaseModel
+from pydantic.v1 import UUID4
 
 from src.rolls.attribute_rolls import DexRoll
 from src.rolls.dice import D10
@@ -14,6 +16,7 @@ class BehaviorConfig(BaseModel):
     target_priority: Optional[Union[Literal["most_healthy", "least_healthy"]]] = (
         "most_healthy"
     )
+    handle_turn_manually: bool = False
 
 
 class CharacterConfig(BaseModel):
@@ -24,6 +27,7 @@ class CharacterConfig(BaseModel):
 
 
 class Character(BaseModel):
+    id: UUID = field(default=uuid4())
     ac: int
     hp: int
     max_hp: int = None
@@ -50,6 +54,10 @@ class Character(BaseModel):
     @property
     def target_priority(self):
         return self.config.behavior.target_priority
+
+    @property
+    def handle_turn_manually(self):
+        return self.config.behavior.handle_turn_manually
 
     @cached_property
     def initiative(self):

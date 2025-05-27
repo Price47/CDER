@@ -1,5 +1,4 @@
-from dataclasses import field
-from typing import List
+from typing import List, Any
 
 from pydantic import BaseModel
 
@@ -13,7 +12,7 @@ class Party(BaseModel):
     """
 
     characters: List[Character]
-    character_heap: CharacterHeap = field(init=False)
+    character_heap: CharacterHeap = None
 
-    def __post_init__(self):
+    def model_post_init(self, _context: Any):
         self.character_heap = CharacterHeap(self.characters)

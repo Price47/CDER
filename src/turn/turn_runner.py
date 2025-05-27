@@ -19,3 +19,10 @@ class TurnRunner(BaseModel):
         character = entry.character
         character.act()
         self.next_turn_queue.put(entry)
+
+    def run(self):
+        while not self.turn_queue.empty():
+            entry = self.turn_queue.get()
+            self.next_turn_queue.put(entry)
+
+        print("turn over")

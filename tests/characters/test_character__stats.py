@@ -1,7 +1,6 @@
 import pytest
 
-from src.characters.character import Character
-from tests.characters.utils import _character_json
+from tests.conftest import character_factory
 
 
 # Stats #
@@ -40,6 +39,6 @@ from tests.characters.utils import _character_json
         pytest.param(30, 10, id="30"),
     ],
 )
-def test_stat_modifier(strength, expected_modifier):
-    c = Character.from_json(_character_json(strength=strength))
+def test_stat_modifier(strength, expected_modifier, character_factory):
+    c = character_factory(strength=strength)
     assert c.stats.str_modifier == expected_modifier
