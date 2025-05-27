@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="battle-simulator",
+    name="CDER",
     version="0.0.1",
     author="Richard Stoeffel",
     author_email="richard@fake.com",
-    description="My short description",
+    description="Chaos Driven Encounter Runner",
     extras_require={
         "test": ["pytest", "pytest-cov", "pytest-clarity", 'mock;python_version<"3.3"']
     },

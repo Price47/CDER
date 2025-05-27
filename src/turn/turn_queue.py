@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List
 
 from pydantic import BaseModel
@@ -26,7 +27,7 @@ class TurnQueue(BaseModel):
     they'll pop out
     """
 
-    queue: List[TurnQueueEntry] = []
+    queue: List[TurnQueueEntry] = field(default_factory=lambda: [])
 
     def qsize(self) -> int:
         return len(self.queue)

@@ -1,26 +1,15 @@
-from typing import Dict
+from dataclasses import field
 
 from pydantic import BaseModel
 
-from src.characters.character import Character
-from src.turn.turn_queue import TurnQueueEntry, TurnQueue
-
-
-class BattleState(BaseModel):
-    belligerents: Dict[Character] = {"NPC": [], "Players": []}
+from src.turn.turn_queue import TurnQueue
 
 
 class TurnRunner(BaseModel):
     turn_queue: TurnQueue
-    next_turn_queue: TurnQueue
+    next_turn_queue: TurnQueue = field(init=False, default_factory=TurnQueue)
 
-    def _tick(self):
-        entry: TurnQueueEntry = self.turn_queue.get()
-        character = entry.character
-        character.act()
-        self.next_turn_queue.put(entry)
-
-    def run(self):
+    def run_turn(self):
         while not self.turn_queue.empty():
             entry = self.turn_queue.get()
             self.next_turn_queue.put(entry)
