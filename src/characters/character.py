@@ -1,14 +1,14 @@
 from dataclasses import field
 from uuid import uuid4, UUID
 from functools import cached_property
-from typing import Literal, Union, Optional, Any
+from typing import Literal, Union, Optional, Any, List
 
 from pydantic import BaseModel
-from pydantic.v1 import UUID4
 
 from src.rolls.attribute_rolls import DexRoll
 from src.rolls.dice import D10
 from src.rolls.dice_pool import HitRoll, DamageRoll
+from src.rolls.role_tables.lingering_injuries import LingeringInjuries
 from src.shared_models.character_stats import CharacterStats
 
 
@@ -26,12 +26,21 @@ class CharacterConfig(BaseModel):
     stats: Optional[CharacterStats] = None
 
 
+class CharacterDetails(BaseModel):
+    battle_scars: List = field(default=[])
+
+    def add_battle_scar(self):
+        injury = LingeringInjuries().roll_table()
+        self.battle_scars.append(injury)
+
+
 class Character(BaseModel):
     id: UUID = field(default=uuid4())
     ac: int
     hp: int
     max_hp: int = None
     config: CharacterConfig
+    details: CharacterDetails = field(default_factory=CharacterDetails)
 
     def model_post_init(self, context: Any):
         self.max_hp = self.hp
@@ -68,21 +77,25 @@ class Character(BaseModel):
     # ========================================== #
     def roll_hit(self, target_character: "Character") -> int:
         hit = HitRoll(modifier=self.hit_modifier)
-        hit_roll = hit.roll()
+        hit.roll()
 
         # Miss on a crit fail regardless of modifiers and target AC
         if hit.critical_failure:
             return 0
 
-        if hit_roll > target_character.ac:
-            dmg = DamageRoll(dx=D10).roll(critical=hit.critical_success)
-            target_character.take_damage(dmg)
-            return dmg
+        return target_character.handle_hit_roll(hit)
 
-        return 0
+    def handle_hit_roll(self, hit_roll: HitRoll):
+        if hit_roll.roll_value < self.ac:
+            return 0
 
-    def take_damage(self, dmg: int):
+        if hit_roll.critical_success:
+            self.details.add_battle_scar()
+
+        dmg = DamageRoll(dx=D10).roll(critical=hit_roll.critical_success)
         self.hp -= dmg
+
+        return dmg
 
     def heal(self, healing: int):
         health = self.hp + healing

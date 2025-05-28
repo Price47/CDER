@@ -8,6 +8,7 @@ class RollDX(BaseModel):
     dx: type[Die] = None
     die: Die = None
     modifier: int = 0
+    roll_value: int = None
 
     def model_post_init(self, _context: Any):
         self.die = self.dx()
@@ -34,7 +35,8 @@ class RollXDX(RollDX):
         self.dice_pool.extend([self.dx()] * x)
 
     def roll(self, **kwargs):
-        return sum([d.roll() for d in self.dice_pool])
+        self.roll_value = sum([d.roll() for d in self.dice_pool])
+        return self.roll_value
 
 
 class CriticalRoll(RollXDX):

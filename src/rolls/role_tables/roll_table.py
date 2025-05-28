@@ -15,7 +15,8 @@ class RollModel(enum.Enum):
     STANDARD = "standard"
     # Generate rolls chances closer to a mild bell curve, by using multiple die to make
     # the high and low extremes less likely. (The math on this as is is shakey and
-    # questionable at best, but basically right)
+    # questionable at best, but basically right). Returning the same table entry for multiple
+    # rolls will also help bell-curve-ify, to make less extreme results more common
     BELL = "bell-curve"
 
 
@@ -65,10 +66,11 @@ class RollTable(BaseModel):
                     f"being 1"
                 )
 
+            self.dice = _dice
+
     def _roll(self):
         return sum([d.roll() for d in self.dice])
 
     def roll_table(self):
         _roll = self._roll()
-        # TODO: Add a test for this for bell model think this wont work
         return self.table_entries[_roll - 1]
