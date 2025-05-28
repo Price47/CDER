@@ -16,7 +16,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=["PyYAML", "other_packages"],
-    url="https://github.com/gene1wood/projectname",
+    url="https://github.com/Price47/CDER",
     packages=setuptools.find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

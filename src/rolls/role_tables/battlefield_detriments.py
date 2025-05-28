@@ -15,7 +15,7 @@ entries = [
     "beginning of the next round.",
     "A barrage of arrows flies toward the party in a 60 ft. cone. Creatures in the area must make a DC X Dexterity "
     "saving throw or take 4d6 piercing damage.",
-    "No Effect. Roll on this table again at the beginning of the next round.",
+    "No Effect",
 ]
 
 

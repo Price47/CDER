@@ -5,7 +5,7 @@ from random import randint
 
 
 class Die(BaseModel):
-    verbose: bool = True
+    verbose: bool = False
     die_max: int
     last_role: Optional[int] = None
 

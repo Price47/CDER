@@ -1,4 +1,4 @@
-# Battle Simulator [WIP]
+# Chaos Driven Encounter Runner [WIP]
 
 For the brave DM determined to impress their players by running a massive 
 combat encounter, whether its 200 rats or two kingdoms at war. WIP but will 
