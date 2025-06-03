@@ -5,6 +5,7 @@ from typing import Literal, Union, Optional, Any, List
 
 from pydantic import BaseModel
 
+from src.data.models.dnd_beyond_sheet import DNDBeyondExtractedCharacterData
 from src.rolls.attribute_rolls import DexRoll
 from src.rolls.dice import D10
 from src.rolls.dice_pool import HitRoll, DamageRoll
@@ -21,8 +22,8 @@ class BehaviorConfig(BaseModel):
 
 class CharacterConfig(BaseModel):
     hit_modifier: int
-    morale: int
-    behavior: BehaviorConfig
+    morale: int = 0
+    behavior: BehaviorConfig = field(default_factory=BehaviorConfig)
     stats: Optional[CharacterStats] = None
 
 
@@ -117,3 +118,9 @@ class Character(BaseModel):
             ac=json["ac"],
             config=CharacterConfig(**json["config"]),
         )
+
+    @classmethod
+    def from_extracted_dnd_beyond_data(cls, data: DNDBeyondExtractedCharacterData):
+        config = CharacterConfig(hit_modifier=data.hit_modifier, stats=data.stats)
+
+        return cls(hp=data.max_hp, ac=data.ac, config=config)

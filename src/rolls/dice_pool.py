@@ -1,7 +1,7 @@
 from typing import Any
 
 from pydantic import BaseModel
-from src.rolls.dice import Die, D20
+from src.rolls.dice import Die, D20, D8, D10, D12, D100, D4, D6
 
 
 class RollDX(BaseModel):
@@ -38,6 +38,31 @@ class RollXDX(RollDX):
         self.roll_value = sum([d.roll() for d in self.dice_pool])
         return self.roll_value
 
+    @staticmethod
+    def dx_die(dx_string: str) -> type[Die]:
+        return {
+            "4": D4,
+            "6": D6,
+            "8": D8,
+            "10": D10,
+            "12": D12,
+            "20": D20,
+            "100": D100,
+        }[dx_string]
+
+    @classmethod
+    def from_string(cls, string: str, modifier: int = 0):
+        """
+        From the standard xdx format
+        """
+
+        x, dx = string.split("d")
+        return cls(
+            x=int(x),
+            dx=cls.dx_die(dx),
+            modifier=modifier,
+        )
+
 
 class CriticalRoll(RollXDX):
     """
@@ -59,6 +84,8 @@ class HitRoll(CriticalRoll):
 
 
 class DamageRoll(RollXDX):
+    damage_type: str = None
+
     def roll(self, **kwargs) -> int:
         if kwargs.get("critical"):
             # double rolled damage die, and regenerate dice pool
