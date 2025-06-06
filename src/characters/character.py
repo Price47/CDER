@@ -36,12 +36,13 @@ class CharacterDetails(BaseModel):
 
 
 class Character(BaseModel):
-    id: UUID = field(default=uuid4())
+    id: UUID = field(default_factory=uuid4)
     ac: int
     hp: int
     max_hp: int = None
     config: CharacterConfig
     details: CharacterDetails = field(default_factory=CharacterDetails)
+    party: Any = None
 
     def model_post_init(self, context: Any):
         self.max_hp = self.hp
@@ -73,6 +74,10 @@ class Character(BaseModel):
     def initiative(self):
         return DexRoll(stats=self.stats).roll()
 
+    @property
+    def threat(self):
+        return self.hp + self.ac
+
     # ========= Character Interactions ========= #
     # Character actions towards other characters #
     # ========================================== #
@@ -102,11 +107,13 @@ class Character(BaseModel):
         health = self.hp + healing
         self.hp = min(health, self.max_hp)
 
-    def act(self, target_character: "Character"):
+    def act(self, target_character: "Character" = None):
         """
         Character action
         """
-        self.roll_hit(target_character)
+        print(f"Character {self.id} Acting")
+        print(f"Character belongs to party {id(self.party)}")
+        # self.roll_hit(target_character)
 
     # ========= class methods ========= #
     # generate characters classes        #

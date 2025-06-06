@@ -1,4 +1,5 @@
 from typing import List, Literal
+from copy import deepcopy
 
 from pydantic import BaseModel
 
@@ -24,7 +25,7 @@ class CharacterHeap:
         config: CharacterHeapConfig = None,
     ):
         self.config = config or CharacterHeapConfig(heapify_attribute="hp", order="min")
-        self._heap: List[Character] = initial_characters or []
+        self.heap: List[Character] = initial_characters or []
 
         # After setting self's values, if a list was provided, min heapify it
         if initial_characters:
@@ -44,17 +45,17 @@ class CharacterHeap:
         """
         Insert based on characters HP attribute
         """
-        self._heap.append(char)
-        idx = len(self._heap) - 1
+        self.heap.append(char)
+        idx = len(self.heap) - 1
 
         # compare to parent node
-        while idx > 0 and self._attr(self._heap[(idx - 1) // 2]) > self._attr(
-            self._heap[idx]
+        while idx > 0 and self._attr(self.heap[(idx - 1) // 2]) > self._attr(
+            self.heap[idx]
         ):
             # parent attribute is greater, swap nodes
-            self._heap[idx], self._heap[(idx - 1) // 2] = (
-                self._heap[(idx - 1) // 2],
-                self._heap[idx],
+            self.heap[idx], self.heap[(idx - 1) // 2] = (
+                self.heap[(idx - 1) // 2],
+                self.heap[idx],
             )
             idx = (idx - 1) // 2
 
@@ -63,24 +64,29 @@ class CharacterHeap:
         left = 2 * i + 1
         right = 2 * i + 2
 
-        if left < n and self._attr(self._heap[left]) < self._attr(self._heap[smallest]):
+        if left < n and self._attr(self.heap[left]) < self._attr(self.heap[smallest]):
             smallest = left
 
-        if right < n and self._attr(self._heap[right]) < self._attr(
-            self._heap[smallest]
-        ):
+        if right < n and self._attr(self.heap[right]) < self._attr(self.heap[smallest]):
             smallest = right
 
         if smallest != i:
-            self._heap[i], self._heap[smallest] = self._heap[smallest], self._heap[i]
+            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
             self._heapify(smallest, n)
 
     def heapify(self):
-        for i in range(len(self._heap) // 2 - 1, -1, -1):
-            self._heapify(i, len(self._heap))
+        for i in range(len(self.heap) // 2 - 1, -1, -1):
+            self._heapify(i, len(self.heap))
 
     def pop(self):
-        root = self._heap[0]
-        self._heap = self._heap[1::]
+        root = self.heap[0]
+        self.heap = self.heap[1::]
         self.heapify()
         return root
+
+    def peek(self):
+        """
+        Important note, only peeking at the character reference so this is
+        a COPY, not the actual reference
+        """
+        return deepcopy(self.heap[0])
