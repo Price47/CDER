@@ -2,13 +2,11 @@ from dataclasses import field
 from pydantic import BaseModel
 from typing import List
 
-from src.characters import Character
-from src.characters.party import Party
 from src.context import current_round
 from src.logger import event_logger as logger
 from src.rolls.role_tables.battlefield_detriments import BattleFieldDetriments
+from src.runner.generate_actors import generate_actors
 from src.turn.turn_queue import TurnQueue, TurnQueueEntry
-from tests.defaults import character_json
 
 
 class TurnRunnerConfig(BaseModel):
@@ -54,16 +52,8 @@ class TurnRunner(BaseModel):
 
 
 if __name__ == "__main__":
-    party_one = Party.build_party(
-        characters=[Character.from_json(character_json()) for i in range(100)]
-    )
-    party_two = Party.build_party(
-        characters=[Character.from_json(character_json()) for i in range(100)]
-    )
-
-    _queue = [TurnQueueEntry.from_character(c) for c in party_one.characters] + [
-        TurnQueueEntry.from_character(c) for c in party_two.characters
-    ]
+    character_actors, parties = generate_actors()
+    _queue = [TurnQueueEntry.from_character_actor(c) for c in character_actors]
 
     queue = TurnQueue(queue=_queue)
     TurnRunner(turn_queue=queue).run()

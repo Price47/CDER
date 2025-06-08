@@ -1,6 +1,7 @@
 import dataclasses
 from typing import List, Any
 
+from pydantic import ConfigDict
 
 from src.characters.data_structs.character_min_heap import CharacterHeap
 from src.characters.character import Character
@@ -14,6 +15,8 @@ class Party:
 
     characters: List[Character]
     character_heap: CharacterHeap = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def __init__(self, characters: List[Character]):
         self.character_heap = CharacterHeap(characters)

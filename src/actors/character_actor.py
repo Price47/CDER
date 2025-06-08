@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from src.characters import Character
 from src.characters.party import Party
@@ -10,6 +10,8 @@ class CharacterActor(BaseModel):
     character: Character
     party: Party
     opposing_parties: List[Party]
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def get_target(self):
         target = self.opposing_parties[0].character_heap.peek()

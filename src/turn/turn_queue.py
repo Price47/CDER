@@ -3,23 +3,27 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.characters import Character
+from src.actors.character_actor import CharacterActor
 
 
 class TurnQueueEntry(BaseModel):
     # manually handle turn
     handle_turn_manually: bool = False
-    character: Character
+    character_actor: CharacterActor
 
     @property
     def initiative(self):
         return self.character.initiative
 
+    @property
+    def character(self):
+        return self.character_actor.character
+
     @classmethod
-    def from_character(cls, character: Character) -> "TurnQueueEntry":
+    def from_character_actor(cls, character_actor: CharacterActor) -> "TurnQueueEntry":
         return cls(
-            character=character,
-            handle_turn_manually=character.handle_turn_manually,
+            character_actor=character_actor,
+            handle_turn_manually=character_actor.character.handle_turn_manually,
         )
 
 
