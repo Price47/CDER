@@ -18,3 +18,12 @@ class CharacterActor(BaseModel):
             t = p.character_heap.peek()
             if t.hp < target.hp:
                 target = t
+
+
+def generate_character_actors_from_party(
+    party: Party, opposing_parties: List[Party]
+) -> List[CharacterActor]:
+    return [
+        CharacterActor(character=c, party=party, opposing_parties=opposing_parties)
+        for c in party.characters
+    ]

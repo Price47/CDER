@@ -27,19 +27,19 @@ def test_character_min_heap():
     [char_1, char_2, char_3, char_4], _ = _characters()
 
     c_heap.insert(char_1)
-    assert c_heap._heap[0] == char_1
+    assert c_heap.heap[0] == char_1
 
     c_heap.insert(char_2)
     # new char is lowest health, should be top of stack
-    assert c_heap._heap[0] == char_2
+    assert c_heap.heap[0] == char_2
 
     c_heap.insert(char_3)
     # should remain unchanged
-    assert c_heap._heap[0] == char_2
+    assert c_heap.heap[0] == char_2
 
     c_heap.insert(char_4)
     # new lowest health is char 4
-    assert c_heap._heap[0] == char_4
+    assert c_heap.heap[0] == char_4
 
 
 def test_min_heapify():
@@ -47,7 +47,7 @@ def test_min_heapify():
     c_heap = CharacterHeap(chars)
 
     # Last characters in the list should be smallest (top of queue)
-    assert c_heap._heap[0] == min_char
+    assert c_heap.heap[0] == min_char
 
 
 def test_pop():
@@ -57,5 +57,5 @@ def test_pop():
     second_lowest_char = sorted(chars, key=lambda x: x.hp)[1]
 
     assert c_heap.pop() == min_char
-    assert c_heap._heap[0] == second_lowest_char
+    assert c_heap.heap[0] == second_lowest_char
     assert c_heap.pop() == second_lowest_char

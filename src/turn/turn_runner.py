@@ -48,22 +48,22 @@ class TurnRunner(BaseModel):
         self.run_actions()
 
     def run(self):
-        for i in range(1, 5):
+        for i in range(1, 500):
             current_round.set(i)
             self.run_round()
 
 
 if __name__ == "__main__":
     party_one = Party.build_party(
-        characters=[Character.from_json(character_json()) for i in range(10)]
+        characters=[Character.from_json(character_json()) for i in range(100)]
     )
     party_two = Party.build_party(
-        characters=[Character.from_json(character_json()) for i in range(10)]
+        characters=[Character.from_json(character_json()) for i in range(100)]
     )
 
     _queue = [TurnQueueEntry.from_character(c) for c in party_one.characters] + [
         TurnQueueEntry.from_character(c) for c in party_two.characters
     ]
-    print(_queue)
+
     queue = TurnQueue(queue=_queue)
     TurnRunner(turn_queue=queue).run()

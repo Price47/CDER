@@ -11,6 +11,10 @@ class TurnQueueEntry(BaseModel):
     handle_turn_manually: bool = False
     character: Character
 
+    @property
+    def initiative(self):
+        return self.character.initiative
+
     @classmethod
     def from_character(cls, character: Character) -> "TurnQueueEntry":
         return cls(

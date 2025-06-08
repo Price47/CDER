@@ -112,7 +112,6 @@ class Character(BaseModel):
         Character action
         """
         print(f"Character {self.id} Acting")
-        print(f"Character belongs to party {id(self.party)}")
         # self.roll_hit(target_character)
 
     # ========= class methods ========= #

@@ -12,6 +12,7 @@ class Party:
     Collection of characters
     """
 
+    characters: List[Character]
     character_heap: CharacterHeap = None
 
     def __init__(self, characters: List[Character]):
