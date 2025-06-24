@@ -16,8 +16,7 @@ def build_party() -> Party:
 
 
 def build_parties() -> List[Party]:
-    parties = [build_party() for _ in range(3)]
-    return parties
+    return [build_party() for _ in range(3)]
 
 
 def generate_actors() -> Tuple[List[CharacterActor], List[Party]]:
@@ -32,9 +31,3 @@ def generate_actors() -> Tuple[List[CharacterActor], List[Party]]:
     return sorted(
         actors, reverse=True, key=lambda actor: actor.character.initiative
     ), parties
-
-
-if __name__ == "__main__":
-    g, parties = generate_actors()
-    for _g in g:
-        print(_g.character.initiative)

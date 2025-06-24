@@ -4,6 +4,7 @@ from typing import List
 from pydantic import BaseModel
 
 from src.actors.character_actor import CharacterActor
+from src.characters import Character
 
 
 class TurnQueueEntry(BaseModel):
@@ -12,12 +13,22 @@ class TurnQueueEntry(BaseModel):
     character_actor: CharacterActor
 
     @property
-    def initiative(self):
+    def initiative(self) -> int:
         return self.character.initiative
 
     @property
-    def character(self):
+    def character(self) -> Character:
         return self.character_actor.character
+
+    def act(self):
+        target_party = self.character_actor.get_target_party()
+        target_character = target_party.pop_target_character()
+
+        if target_character:
+            self.character.act(target_character)
+            if target_character.hp > 0:
+                target_party.character_heap.insert(target_character)
+
 
     @classmethod
     def from_character_actor(cls, character_actor: CharacterActor) -> "TurnQueueEntry":

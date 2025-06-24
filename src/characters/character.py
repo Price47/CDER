@@ -111,8 +111,14 @@ class Character(BaseModel):
         """
         Character action
         """
-        print(f"Character {self.id} Acting")
-        # self.roll_hit(target_character)
+        print(f"target character BEFORE action {target_character}")
+        self.roll_hit(target_character)
+        print(f"target character AFTER action {target_character}")
+
+
+
+    # def __str__(self):
+    #     return f"Character {self.id}"
 
     # ========= class methods ========= #
     # generate characters classes        #

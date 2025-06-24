@@ -25,6 +25,12 @@ class Party:
     def characters(self) -> List[Character]:
         return self.character_heap.heap
 
+    def check_target_character(self) -> Character:
+        return self.character_heap.peek()
+
+    def pop_target_character(self) -> Character:
+        return self.character_heap.pop()
+
     @classmethod
     def build_party(cls, characters: List[Character]) -> "Party":
         party = cls(characters)
@@ -32,3 +38,4 @@ class Party:
             c.party = party
 
         return party
+

@@ -18,3 +18,15 @@ def test_character_initiative_caching(mocker, character_factory):
     assert c.initiative == 19
     # Cached initiative should not use the new roll of 12 (or roll at all)
     assert c.initiative == 19
+
+
+def test_character_act(mocker, character_factory):
+    mock_damage = 12
+    mocker.patch("src.rolls.dice.randint", side_effect=[18, mock_damage])
+    c = character_factory()
+    target = character_factory()
+    target_start_health = target.hp
+
+    c.act(target)
+
+    assert target.hp == target_start_health - mock_damage

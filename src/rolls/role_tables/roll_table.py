@@ -71,6 +71,19 @@ class RollTable(BaseModel):
     def _roll(self):
         return sum([d.roll() for d in self.dice])
 
-    def roll_table(self):
+    def _translate_roll(self):
         _roll = self._roll()
+        if self.model == RollModel.BELL:
+            # minium possible roll
+            min_roll = len(self.dice)
+            # translate array positions left based on min (index 0
+            # should represent a roll of 5 for D100 bell model, since
+            # rolling 5 d20's can't return less than 5
+            return _roll - min_roll
+
+        return _roll
+
+
+    def roll_table(self):
+        _roll = self._translate_roll()
         return self.table_entries[_roll - 1]

@@ -36,13 +36,15 @@ def test_critical_hit(mocker, default_character, character_factory):
             6,
         ],
     )
+    # Lingering effect rolls translated to the correct index
+    expected_lingering_effect_index = (5+10-2-1)
     # target characters
     tc = character_factory(ac=12)
 
     hit_damage = default_character.roll_hit(tc)
     assert hit_damage == 14
     assert tc.hp == 30 - hit_damage
-    assert tc.details.battle_scars == [lingering_injuries_entries[5 + 10]]
+    assert tc.details.battle_scars == [lingering_injuries_entries[expected_lingering_effect_index]]
 
 
 def test_critical_miss(mocker, default_character, character_factory):

@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 from pydantic import BaseModel, ConfigDict
@@ -13,14 +14,9 @@ class CharacterActor(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def get_target(self):
-        target = self.opposing_parties[0].character_heap.peek()
-
-        for p in self.opposing_parties[1:]:
-            t = p.character_heap.peek()
-            if t.hp < target.hp:
-                target = t
-
+    def get_target_party(self) -> Party:
+        #TODO: Return min by attr by party
+        return random.choice(self.opposing_parties)
 
 def generate_character_actors_from_party(
     party: Party, opposing_parties: List[Party]

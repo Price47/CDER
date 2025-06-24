@@ -77,6 +77,9 @@ class AttributeHeap(Generic[T]):
             self._heapify(i, len(self.heap))
 
     def pop(self):
+        if not len(self.heap):
+            return None
+
         root = self.heap[0]
         self.heap = self.heap[1::]
         self.heapify()

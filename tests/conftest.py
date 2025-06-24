@@ -28,8 +28,11 @@ def character_actor_factory():
         p = Party([character])
         character.party = p
 
+        opposing_character = Character.from_json(character_json(**kwargs))
+        opposing_party = Party([opposing_character])
+
         character_actor = CharacterActor(
-            character=character, party=p, opposing_parties=[]
+            character=character, party=p, opposing_parties=[opposing_party]
         )
 
         return character_actor
