@@ -16,7 +16,7 @@ def build_party() -> Party:
 
 
 def build_parties() -> List[Party]:
-    return [build_party() for _ in range(3)]
+    return [build_party() for _ in range(5)]
 
 
 def generate_actors() -> Tuple[List[CharacterActor], List[Party]]:

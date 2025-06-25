@@ -8,7 +8,7 @@ def test_turn_runner_run_round(character_actor_factory):
         for _ in range(10)
     ]
     queue = TurnQueue(queue=entries)
-    runner = TurnRunner(turn_queue=queue)
+    runner = TurnRunner(turn_queue=queue, parties=[])
 
     for idx, e in enumerate(entries):
         assert e == runner.turn_queue.queue[idx]

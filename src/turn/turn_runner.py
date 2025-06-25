@@ -1,7 +1,8 @@
 from dataclasses import field
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 
+from src.characters.party import Party
 from src.context import current_round
 from src.logger import event_logger as logger
 from src.rolls.role_tables.battlefield_detriments import BattleFieldDetriments
@@ -21,6 +22,14 @@ class TurnRunner(BaseModel):
     config: TurnRunnerConfig = field(default_factory=TurnRunnerConfig)
     turn_queue: TurnQueue
     next_turn_queue: TurnQueue = field(init=False, default_factory=TurnQueue)
+    parties: List[Party]
+    victors: Party = field(init=False, default=None)
+
+    def _check_battle_over(self) -> bool:
+        if sum([1 for p in self.parties if not p.is_wiped]) == 1:
+            return True
+
+        return False
 
     def run_actions(self):
         while not self.turn_queue.empty():
@@ -48,10 +57,22 @@ class TurnRunner(BaseModel):
         self.run_events()
         self.run_actions()
 
+    def summarize(self):
+        initial_combatants = sum([p.party_size for p in self.parties])
+        logger.info(f"The battle is won. {initial_combatants} started, {len(self.victors.active_party_members)} remain")
+        for m in self.victors.active_party_members:
+            print(m.id)
+            print(m.details.battle_scars)
+
     def run(self):
         for i in range(1, 500):
+            if self._check_battle_over():
+                self.victors = list(filter(lambda p: not p.is_wiped, self.parties))[0]
+                self.summarize()
+                return
             current_round.set(i)
             self.run_round()
+
 
 
 if __name__ == "__main__":
@@ -59,4 +80,6 @@ if __name__ == "__main__":
     _queue = [TurnQueueEntry.from_character_actor(c) for c in character_actors]
 
     queue = TurnQueue(queue=_queue)
-    TurnRunner(turn_queue=queue).run()
+    TurnRunner(turn_queue=queue, parties=parties).run()
+
+

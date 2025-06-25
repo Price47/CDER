@@ -78,6 +78,10 @@ class Character(BaseModel):
     def threat(self):
         return self.hp + self.ac
 
+    @property
+    def is_alive(self):
+        return self.hp > 0
+
     # ========= Character Interactions ========= #
     # Character actions towards other characters #
     # ========================================== #
@@ -111,9 +115,10 @@ class Character(BaseModel):
         """
         Character action
         """
-        print(f"target character BEFORE action {target_character}")
-        self.roll_hit(target_character)
-        print(f"target character AFTER action {target_character}")
+        # TODO: Add better handling for this in character actor i think
+        if self.is_alive:
+            self.roll_hit(target_character)
+
 
 
 

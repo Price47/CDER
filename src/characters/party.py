@@ -1,4 +1,5 @@
 import dataclasses
+from functools import cached_property
 from typing import List, Any
 
 from pydantic import ConfigDict
@@ -18,12 +19,20 @@ class Party:
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def __init__(self, characters: List[Character]):
-        self.character_heap = CharacterHeap(characters)
+    def __post_init__(self):
+        self.character_heap = CharacterHeap(self.characters)
 
     @property
-    def characters(self) -> List[Character]:
-        return self.character_heap.heap
+    def active_party_members(self) -> List[Character]:
+        return list(filter(lambda c: c.is_alive, self.characters))
+
+    @cached_property
+    def party_size(self) -> int:
+        return len(self.characters)
+
+    @property
+    def is_wiped(self):
+        return len(self.active_party_members) == 0
 
     def check_target_character(self) -> Character:
         return self.character_heap.peek()

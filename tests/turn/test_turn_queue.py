@@ -4,7 +4,6 @@ from src.turn.turn_queue import TurnQueueEntry, TurnQueue
 def test_turn_queue_entry_creation(character_actor_factory):
     c = character_actor_factory()
     entry = TurnQueueEntry.from_character_actor(c)
-    print(entry)
     assert entry.character.id == c.character.id
 
 
