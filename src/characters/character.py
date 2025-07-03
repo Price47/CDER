@@ -119,9 +119,6 @@ class Character(BaseModel):
         if self.is_alive:
             self.roll_hit(target_character)
 
-
-
-
     # def __str__(self):
     #     return f"Character {self.id}"
 

@@ -83,7 +83,6 @@ class RollTable(BaseModel):
 
         return _roll
 
-
     def roll_table(self):
         _roll = self._translate_roll()
         return self.table_entries[_roll - 1]

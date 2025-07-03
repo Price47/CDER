@@ -4,10 +4,9 @@ from src.context import current_round
 
 logging.getLogger().setLevel(logging.DEBUG)
 
+
 # Event Logger #
 # Log different event actions, will include round number #
-
-
 class RoundFilter(logging.Filter):
     def filter(self, record):
         record.round_number = current_round.get()

@@ -24,7 +24,7 @@ def test_lingering_injuries_table(mocker):
     outcome = t.roll_table()
 
     # Lingering effect rolls translated to the correct index
-    expected_lingering_effect_index = (2+6-2-1)
+    expected_lingering_effect_index = 2 + 6 - 2 - 1
 
     # for a roll of '2', assert the 2nd table entry is returned
     assert outcome == lingering_injuries_entries[expected_lingering_effect_index]

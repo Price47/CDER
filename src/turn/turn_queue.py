@@ -29,7 +29,6 @@ class TurnQueueEntry(BaseModel):
             if target_character.hp > 0:
                 target_party.character_heap.insert(target_character)
 
-
     @classmethod
     def from_character_actor(cls, character_actor: CharacterActor) -> "TurnQueueEntry":
         return cls(

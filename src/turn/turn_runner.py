@@ -1,5 +1,5 @@
 from dataclasses import field
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import List
 
 from src.characters.party import Party
@@ -36,9 +36,7 @@ class TurnRunner(BaseModel):
             entry = self.turn_queue.get()
             entry.act()
 
-
             self.next_turn_queue.put(entry)
-
 
         self.turn_queue = self.next_turn_queue
         self.next_turn_queue = TurnQueue()
@@ -59,20 +57,21 @@ class TurnRunner(BaseModel):
 
     def summarize(self):
         initial_combatants = sum([p.party_size for p in self.parties])
-        logger.info(f"The battle is won. {initial_combatants} started, {len(self.victors.active_party_members)} remain")
+        logger.info(
+            f"The battle is won. {initial_combatants} started, {len(self.victors.active_party_members)} remain"
+        )
         for m in self.victors.active_party_members:
             print(m.id)
             print(m.details.battle_scars)
 
     def run(self):
-        for i in range(1, 500):
-            if self._check_battle_over():
-                self.victors = list(filter(lambda p: not p.is_wiped, self.parties))[0]
-                self.summarize()
-                return
-            current_round.set(i)
+        while not self._check_battle_over():
+            _current_round = current_round.get()
+            current_round.set(_current_round + 1)
             self.run_round()
 
+        self.victors = list(filter(lambda p: not p.is_wiped, self.parties))[0]
+        self.summarize()
 
 
 if __name__ == "__main__":
@@ -81,5 +80,3 @@ if __name__ == "__main__":
 
     queue = TurnQueue(queue=_queue)
     TurnRunner(turn_queue=queue, parties=parties).run()
-
-

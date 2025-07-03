@@ -15,8 +15,9 @@ class CharacterActor(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def get_target_party(self) -> Party:
-        #TODO: Return min by attr by party
+        # TODO: Return min by attr by party
         return random.choice(self.opposing_parties)
+
 
 def generate_character_actors_from_party(
     party: Party, opposing_parties: List[Party]

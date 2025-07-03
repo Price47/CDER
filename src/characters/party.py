@@ -47,4 +47,3 @@ class Party:
             c.party = party
 
         return party
-
