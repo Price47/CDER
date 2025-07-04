@@ -1,6 +1,6 @@
 import dataclasses
 from functools import cached_property
-from typing import List, Any
+from typing import List
 
 from pydantic import ConfigDict
 
@@ -47,3 +47,4 @@ class Party:
             c.party = party
 
         return party
+
