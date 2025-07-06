@@ -28,6 +28,7 @@ def generate_actors() -> Tuple[List[CharacterActor], List[Party]]:
         opposing_parties = parties[:i] + parties[i + 1 :]
         actors.extend(generate_character_actors_from_party(party, opposing_parties))
 
-    return sorted(
-        actors, reverse=True, key=lambda actor: actor.character.initiative
-    ), parties
+    return (
+        sorted(actors, reverse=True, key=lambda actor: actor.character.initiative),
+        parties,
+    )

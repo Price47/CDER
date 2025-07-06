@@ -14,9 +14,9 @@ from src.shared_models.character_stats import CharacterStats
 
 
 class BehaviorConfig(BaseModel):
-    target_priority: Optional[Union[Literal["most_healthy", "least_healthy"]]] = (
-        "most_healthy"
-    )
+    target_priority: Optional[
+        Union[Literal["most_healthy", "least_healthy"]]
+    ] = "most_healthy"
     handle_turn_manually: bool = False
 
 
