@@ -47,6 +47,9 @@ class TurnQueue(BaseModel):
 
     queue: List[TurnQueueEntry] = field(default_factory=lambda: [])
 
+    # def model_post_init(self, queue: List[TurnQueueEntry] = None):
+    #     self.queue = sorted(self.queue, key=lambda q: q.character.initiative, reverse=True)
+
     def qsize(self) -> int:
         return len(self.queue)
 

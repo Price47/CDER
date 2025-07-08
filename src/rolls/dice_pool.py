@@ -36,6 +36,7 @@ class RollXDX(RollDX):
 
     def roll(self, **kwargs):
         self.roll_value = sum([d.roll() for d in self.dice_pool])
+
         return self.roll_value
 
     @staticmethod

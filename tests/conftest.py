@@ -45,6 +45,7 @@ def character_actor_factory():
     return _character_factory
 
 
+# TODO: better character configurations
 @pytest.fixture()
 def character_actor_and_party_factory():
     def _character_actor_and_party_factory(
